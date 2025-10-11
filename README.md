@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Send to Future
 
-## Getting Started
+A modern **Next.js + Tailwind + Supabase** web application where users can leave notes for themselves or others and have them delivered via email at a scheduled time. Users can login via **Google, Apple, Facebook** or email/password.  
 
-First, run the development server:
+---
 
-```bash
+## 📝 Features (In progress)
+
+- User authentication with Supabase
+  - Email & Password login
+  - OAuth: Google, Apple, Facebook
+- Create notes with scheduled send time
+- Rich text formatting support (bold, italic, colors)
+- Future email delivery
+- Responsive landing page with InfoCard & LoginCard
+
+---
+
+## 📂 Project Structure
+
+src/
+├─ app/
+│ ├─ page.tsx # Landing page
+│ └─ dashboard/ # After login pages
+├─ components/
+│ ├─ InfoCard.tsx # Application info component
+│ ├─ LoginCard.tsx # Login / register component
+│ └─ Editor.tsx # Note form component (future)
+├─ lib/
+│ └─ supabaseClient.ts
+├─ styles/
+│ └─ globals.css
+
+
+
+---
+
+## ⚡ Getting Started
+
+1. Clone the repo:
+
+git clone https://github.com/emrekrt1655/sendtofuture
+cd sendtofuture
+
+
+2. Install Dependencies:
+
+npm install
+
+3. Create .env.local with your Supabase credentials:
+
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+
+4. Run the development server:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+📌 TODOs
+Landing Page
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+ Redesign InfoCard using Tailwind
 
-## Learn More
+ Redesign LoginCard using Tailwind
 
-To learn more about Next.js, take a look at the following resources:
+ Add proper mobile & desktop responsiveness
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Authentication
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ Implement full OAuth login (Google, Apple, Facebook)
 
-## Deploy on Vercel
+ Implement Email/Password login & registration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+ Handle errors & loading states
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Notes Management
+
+ Show note form component on dashboard after login
+
+ Display list of notes created by the user
+
+ Implement detailed note page with edit functionality
+
+Email Delivery
+
+ Add backend service to send scheduled emails
+
+ Integrate with notes table to trigger email at send_at datetime
+
+Future Enhancements
+
+ Rich text editor with formatting (bold, italic, colors)
+
+ Notifications / reminders
+
+ Multi-language support
+
+💡 Tech Stack
+
+Next.js 15
+ (App Router)
+
+Tailwind CSS
+
+Supabase
+ for authentication & database
+
+React Icons
+ for social login buttons
+
+TypeScript
+
+📬 Notes
+
+Users can leave notes for themselves or for others.
+
+Each note has:
+
+content → text/html
+
+send_at → scheduled send time
+
+recipient_name & recipient_email → optional recipient info
+
+Emails will be sent via a separate backend service (to be implemented).
+
+⚙️ Contribution
+
+Fork the repository
+
+Create a feature branch (git checkout -b feature/my-feature)
+
+Commit your changes (git commit -am 'Add new feature')
+
+Push to the branch (git push origin feature/my-feature)
+
+Create a Pull Request
+
+
+
+
+
