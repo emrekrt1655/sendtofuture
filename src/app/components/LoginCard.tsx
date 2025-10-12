@@ -1,83 +1,96 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
-import { FcGoogle } from 'react-icons/fc'
-import { FaApple, FaFacebook } from 'react-icons/fa'
+import { useState } from "react";
+import { signInWithEmail, signInWithOAuth } from "@/lib/authActions";
+import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
 
 export default function LoginCard() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleEmailLogin = async () => {
-    setLoading(true)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) alert(error.message)
-    else alert('Logged in successfully!')
-    setLoading(false)
-  }
+    try {
+      setLoading(true);
+      const result = await signInWithEmail(form.email, form.password);
 
-  const handleOAuthLogin = async (provider: 'google' | 'apple' | 'facebook') => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: `${location.origin}/dashboard` },
-    })
-    if (error) alert(error.message)
-  }
+      if (result.isNewUser) {
+        alert("Account created! Check your email for verification.");
+      } else {
+        alert("Welcome back!");
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async () => {
+    try {
+      setLoading(true);
+      await signInWithOAuth("google");
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-sm p-8 border rounded-lg shadow-lg flex flex-col gap-4">
       <h2 className="text-2xl font-bold text-center">Login / Register</h2>
 
       <input
+        name="email"
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={form.email}
+        onChange={handleChange}
         className="w-full p-2 border rounded"
       />
+
       <input
+        name="password"
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={form.password}
+        onChange={handleChange}
         className="w-full p-2 border rounded"
       />
+
       <button
         onClick={handleEmailLogin}
         disabled={loading}
         className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
       >
-        {loading ? 'Loading...' : 'Login with Email'}
+        {loading ? "Loading..." : "Login with Email"}
       </button>
 
-      <p className="text-center text-gray-500 my-2">Or continue with</p>
-
-      <div className="flex justify-center gap-3">
-        <button
-          onClick={() => handleOAuthLogin('google')}
-          className="flex items-center justify-center w-10 h-10 rounded-full border hover:shadow-md transition"
-        >
-          <FcGoogle size={24} />
-        </button>
-        <button
-          onClick={() => handleOAuthLogin('apple')}
-          className="flex items-center justify-center w-10 h-10 rounded-full border hover:shadow-md transition"
-        >
-          <FaApple size={24} />
-        </button>
-        <button
-          onClick={() => handleOAuthLogin('facebook')}
-          className="flex items-center justify-center w-10 h-10 rounded-full border hover:shadow-md transition text-blue-700"
-        >
-          <FaFacebook size={24} />
-        </button>
+      <div className="flex items-center gap-2 my-2">
+        <div className="flex-grow h-px bg-gray-300" />
+        <span className="text-sm text-gray-500">Or</span>
+        <div className="flex-grow h-px bg-gray-300" />
       </div>
+
+      <button
+        onClick={handleOAuthLogin}
+        className="w-full flex items-center justify-center gap-2 py-2 border rounded hover:shadow-md transition"
+      >
+        <FcGoogle size={24} />
+        <span className="font-medium text-gray-700">Sign in with Google</span>
+      </button>
 
       <p className="text-sm text-center text-gray-500 mt-4">
         By registering, you agree to our Terms of Service.
       </p>
     </div>
-  )
+  );
 }
