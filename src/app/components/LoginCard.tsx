@@ -15,6 +15,10 @@ export default function LoginCard() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleRouteToDashboard = () => {
+    router.push("/dashboard");
+  };
+
   const handleEmailLogin = async () => {
     try {
       setLoading(true);
@@ -23,8 +27,7 @@ export default function LoginCard() {
       if (result.isNewUser) {
         alert("Account created! Check your email for verification.");
       } else {
-        alert("Welcome back!");
-        router.push("/dashboard");
+        handleRouteToDashboard();
       }
     } catch (error: any) {
       alert(error.message);
@@ -88,6 +91,16 @@ export default function LoginCard() {
         <span className="font-medium text-gray-700">Sign in with Google</span>
       </button>
 
+      <p className="text-sm text-center text-gray-500 mt-4">
+        If you don't want to login, go to the{" "}
+        <span
+          onClick={handleRouteToDashboard}
+          className="cursor-pointer font-medium text-pink-700"
+        >
+          dashboard
+        </span>{" "}
+        and use the app as a guest!
+      </p>
       <p className="text-sm text-center text-gray-500 mt-4">
         By registering, you agree to our Terms of Service.
       </p>

@@ -12,21 +12,26 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error || !data?.user) {
-        router.push("/");
-        return;
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data?.user) {
+          console.log("No user session found, continuing as a Guest.");
+          setUser(null);
+        } else {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("Error checking user:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-
-      setUser(data.user);
-      setLoading(false);
     };
-
     checkUser();
   }, [router]);
 
-  const userName = user?.email ? user.email.split("@")[0] : "User";
+  const userName = user?.email ? user.email.split("@")[0] : "Guest";
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -48,6 +53,7 @@ export default function DashboardPage() {
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
             className="px-4 py-2 hover:bg-gray-200 hover:text-black rounded-full shadow-sm"
+            disabled={!user}
           >
             Hi, <span className="font-semibold">{userName}</span>
           </button>
@@ -65,7 +71,7 @@ export default function DashboardPage() {
         </div>
       </header>
       <h1 className="text-4xl font-bold">Welcome to Dashboard</h1>
-      <p className="text-gray-600">Logged in as: {user?.email}</p>
+      <p className="text-gray-600">Logged in as: {userName}</p>
     </main>
   );
 }
