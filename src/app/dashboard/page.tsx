@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import DropdownMenu from "@/app/components/DropdownMenu";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -49,26 +50,21 @@ export default function DashboardPage() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen text-center space-y-4">
       <header className="absolute top-4 right-6">
-        <div className="relative">
-          <button
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="px-4 py-2 hover:bg-gray-200 hover:text-black rounded-full shadow-sm"
-            disabled={!user}
-          >
-            Hi, <span className="font-semibold">{userName}</span>
-          </button>
-
-          {menuOpen && (
-            <div className="absolute right-0 mt-2 w-40  shadow-lg">
-              <button
-                onClick={handleSignOut}
-                className="block w-full text-left px-4 py-2  hover:bg-gray-200 hover:text-black"
-              >
-                Sign out
-              </button>
-            </div>
-          )}
-        </div>
+        <DropdownMenu
+          label={
+            <>
+              Hi, <span className="font-semibold">{userName}</span>
+            </>
+          }
+          items={[
+            {
+              label: "Sign out",
+              onClick: handleSignOut,
+              disabled: !user,
+            },
+          ]}
+          disabled={!user}
+        />
       </header>
       <h1 className="text-4xl font-bold">Welcome to Dashboard</h1>
       <p className="text-gray-600">Logged in as: {userName}</p>
