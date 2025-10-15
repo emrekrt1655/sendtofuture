@@ -12,7 +12,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const userId = user?.id || "guest";
+  const GUEST_USER_ID = "00000000-0000-0000-0000-000000000000";
+  const userId = user?.id || GUEST_USER_ID;
 
   useEffect(() => {
     const checkUser = async () => {
@@ -71,7 +72,7 @@ export default function DashboardPage() {
       </header>
 
       <div className="flex w-full max-w-6xl mt-10 px-8 gap-8">
-        {userId === "guest" ? (
+        {userId === GUEST_USER_ID? (
           <div className="mx-auto w-full max-w-md">
             <NoteForm userId={userId} />
           </div>

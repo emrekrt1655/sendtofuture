@@ -1,5 +1,8 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface NoteFormData {
   user_id: string;
@@ -18,10 +21,18 @@ export async function submitNoteAction(formData: FormData) {
     send_at: formData.get("send_at")?.toString() || "",
   };
 
-  if (!note.user_id || note.user_id === "guest") {
-    console.log("📝 Guest user form submission:");
-    console.log(note.content);
-    return { success: true, guest: true };
+  let sendAt: string | null = null;
+
+  if (note.send_at) {
+    const sendDate = new Date(note.send_at);
+    const localDate = new Date(
+      sendDate.getFullYear(),
+      sendDate.getMonth(),
+      sendDate.getDate(),
+      sendDate.getHours(),
+      sendDate.getMinutes()
+    );
+    sendAt = localDate.toISOString();
   }
 
   const { data, error } = await supabase.from("notes").insert([
@@ -30,7 +41,7 @@ export async function submitNoteAction(formData: FormData) {
       recipient_email: note.recipient_email,
       recipient_name: note.recipient_name,
       content: note.content,
-      send_at: note.send_at,
+      send_at: sendAt || new Date().toISOString(),
     },
   ]);
 
