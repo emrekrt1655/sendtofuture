@@ -1,6 +1,6 @@
 "use client";
 
-import { submitNoteAction } from "@/app/actions/NoteAction";
+import { submitNoteAction } from "@/lib/createNoteAction";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import DropdownMenu from "@/app/components/DropdownMenu";
 import NoteForm from "../components/NoteForm";
+import NoteList from "../components/NoteList";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -68,10 +69,23 @@ export default function DashboardPage() {
           disabled={!user}
         />
       </header>
-      <main className="flex flex-col items-center p-8">
-        <h1 className="text-3xl font-bold mb-4">Create a Note</h1>
-        <NoteForm userId={userId} />
-      </main>
+
+      <div className="flex w-full max-w-6xl mt-10 px-8 gap-8">
+        {userId === "guest" ? (
+          <div className="mx-auto w-full max-w-md">
+            <NoteForm userId={userId} />
+          </div>
+        ) : (
+          <>
+            <div className="flex-2">
+              <NoteForm userId={userId} />
+            </div>
+            <div className="flex-1">
+              <NoteList userId={userId} />
+            </div>
+          </>
+        )}
+      </div>
     </main>
   );
 }
