@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import DropdownMenu from "@/app/components/DropdownMenu";
+import NoteForm from "../components/NoteForm";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const userId = user?.id || "guest";
 
   useEffect(() => {
     const checkUser = async () => {
@@ -66,8 +68,10 @@ export default function DashboardPage() {
           disabled={!user}
         />
       </header>
-      <h1 className="text-4xl font-bold">Welcome to Dashboard</h1>
-      <p className="text-gray-600">Logged in as: {userName}</p>
+      <main className="flex flex-col items-center p-8">
+        <h1 className="text-3xl font-bold mb-4">Create a Note</h1>
+        <NoteForm userId={userId} />
+      </main>
     </main>
   );
 }

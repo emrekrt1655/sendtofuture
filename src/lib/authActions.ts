@@ -19,7 +19,6 @@ export const signInWithEmail = async (email: string, password: string) => {
 
         if (signUpError) throw signUpError;
 
-        console.log("🆕 User signed up successfully:", signUpData);
         return { data: signUpData, isNewUser: true };
       } else {
         throw signInError;
