@@ -1,0 +1,20 @@
+name: Trigger Supabase Edge Function
+
+on:
+  schedule:
+    # Her 5 dakikada bir çalışacak (UTC)
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # manuel çalıştırma için
+
+jobs:
+  trigger-edge-function:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Supabase Edge Function
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_KEY }}" \
+          -d '{}' \
+          https://YOUR_PROJECT_REF.functions.supabase.co/send-scheduled-mails
