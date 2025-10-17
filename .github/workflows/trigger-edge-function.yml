@@ -6,7 +6,7 @@ name: Scheduled Supabase Edge Function Caller
 on:
   # Her 5 dakikada bir çalışacak Cron zamanlaması (UTC saatiyle)
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/55 10 * * 5'
   
   # Manuel çalıştırma yeteneği ekler
   workflow_dispatch:
