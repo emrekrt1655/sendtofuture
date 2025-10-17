@@ -1,20 +1,39 @@
-name: Trigger Supabase Edge Function
-
+name: Scheduled Supabase Edge Function Caller
 on:
   schedule:
-    # Her 5 dakikada bir çalışacak (UTC)
-    - cron: "*/5 * * * *"
-  workflow_dispatch: # manuel çalıştırma için
-
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 jobs:
-  trigger-edge-function:
+  call_edge_function:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Trigger Supabase Edge Function
+      - name: Log Starting Time
+        run: echo "Starting call to Edge Function at $(date)"
+
+      - name: Call Supabase Edge Function with Secret
         run: |
-          curl -X POST \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_KEY }}" \
-          -d '{}' \
-          https://YOUR_PROJECT_REF.functions.supabase.co/send-scheduled-mails
+          # Curl komutu için gerekli bilgileri çevre değişkenlerinden alır
+          FUNCTION_URL="${{ secrets.SUPABASE_EDGE_FUNCTION_URL }}"
+          AUTH_HEADER="Bearer ${{ secrets.SUPABASE_FUNCTION_SECRET }}"
+          
+          echo "Calling: ${FUNCTION_URL}"
+          
+          # Edge Function'ı çağır ve yanıtı kaydet
+          # -s: Sessiz modda çalıştır
+          # -S: Hataları göster (Sessiz modda gizlenebilecek hatalar)
+          # -f: HTTP hatası alındığında (örn: 401, 500) başarısız ol
+          response=$(curl -sS -f \
+            -X POST "${FUNCTION_URL}" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: ${AUTH_HEADER}" \
+            -d '{}')
+
+          # Yanıtı log'a yazdır
+          echo "Edge Function Response: ${response}"
+
+        env:
+          SUPABASE_EDGE_FUNCTION_URL: ${{ secrets.SUPABASE_EDGE_FUNCTION_URL }}
+          SUPABASE_FUNCTION_SECRET: ${{ secrets.SUPABASE_FUNCTION_SECRET }}
+          
+      - name: Log Ending Time
+        run: echo "Finished call to Edge Function at $(date)"
