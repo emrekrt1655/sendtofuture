@@ -1,39 +1,22 @@
 # Send to Future
 
-A modern **Next.js + Tailwind + Supabase** web application where users can leave notes for themselves or others and have them delivered via email at a scheduled time. Users can login via **Google, Apple, Facebook** or email/password.  
+A modern **Next.js + Tailwind + Supabase + Resend** web application where users can leave notes for themselves or others and have them delivered via email at a scheduled time. Users can login via **Google** or email/password.  
 
 ---
 
 ## 📝 Features (In progress)
 
-- User authentication with Supabase
-  - Email & Password login
-  - OAuth: Google, Apple, Facebook
-- Create notes with scheduled send time
-- Rich text formatting support (bold, italic, colors)
-- Future email delivery
-- Responsive landing page with InfoCard & LoginCard
-
----
-
-## 📂 Project Structure
-
-src/
-├─ app/
-│ ├─ page.tsx # Landing page
-│ └─ dashboard/ # After login pages
-├─ components/
-│ ├─ InfoCard.tsx # Application info component
-│ ├─ LoginCard.tsx # Login / register component
-│ └─ Editor.tsx # Note form component (future)
-├─ lib/
-│ └─ supabaseClient.ts
-├─ styles/
-│ └─ globals.css
+- User authentication with Supabase  (Done)
+  - Email & Password login (Done)
+  - OAuth: Google, (Done)
+- Create notes with scheduled send time (Done)
+- Rich text formatting support (bold, italic, colors) (Done)
+- Future email delivery (Done)
+- Responsive and Theme design
+- Multi language support
+- Add file support
 
 
-
----
 
 ## ⚡ Getting Started
 
@@ -51,50 +34,13 @@ npm install
 
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+RESEND_API_KEY=<your-resend-api-key>
+NEXT_PUBLIC_GUEST_USER_ID=<your-guest-user-id>
 
 4. Run the development server:
 
 npm run dev
 
-
-📌 TODOs
-Landing Page
-
- Redesign InfoCard using Tailwind
-
- Redesign LoginCard using Tailwind
-
- Add proper mobile & desktop responsiveness
-
-Authentication
-
- Implement full OAuth login (Google, Apple, Facebook)
-
- Implement Email/Password login & registration
-
- Handle errors & loading states
-
-Notes Management
-
- Show note form component on dashboard after login
-
- Display list of notes created by the user
-
- Implement detailed note page with edit functionality
-
-Email Delivery
-
- Add backend service to send scheduled emails
-
- Integrate with notes table to trigger email at send_at datetime
-
-Future Enhancements
-
- Rich text editor with formatting (bold, italic, colors)
-
- Notifications / reminders
-
- Multi-language support
 
 💡 Tech Stack
 
@@ -123,7 +69,7 @@ send_at → scheduled send time
 
 recipient_name & recipient_email → optional recipient info
 
-Emails will be sent via a separate backend service (to be implemented).
+Emails will be sent via a supabase cron job.
 
 ⚙️ Contribution
 
