@@ -21,3 +21,22 @@ export async function getNotes(userId: string) {
 
   return data || [];
 }
+
+export async function getNoteById(noteId: string) {
+  if (!noteId) {
+    throw new Error("Note ID is required to fetch the note.");
+  }
+
+  const { data, error } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("id", noteId)
+    .single();
+
+  if (error) {
+    console.error("❌ Error fetching note by ID:", error.message);
+    return [];
+  }
+
+  return data || [];
+}

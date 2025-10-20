@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import DropdownMenu from "@/app/components/DropdownMenu";
 import { User } from "@supabase/supabase-js";
-import { UserProvider } from '@/context/UserContext';
+import { UserProvider } from "@/context/UserContext";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -28,12 +28,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         console.error("Error during session check:", error);
       } finally {
         setUser(currentUser);
-        
+
         setLoading(false);
       }
     };
     checkUser();
-  }, [router]); 
+  }, [router]);
 
   const userName = user?.email ? user.email.split("@")[0] : "Guest";
 
@@ -41,19 +41,38 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     router.push("/");
   };
-  
-  const isDashboard = pathname === '/dashboard';
-  const navLink = isDashboard 
-    ? { 
-        label: "View Notes", 
-        onClick: () => router.push("/notes"), 
-        disabled: false
-      }
-    : { 
-        label: "Create Note", 
+
+  const isDashboard = pathname === "/dashboard";
+  const isNotesList = pathname === "/notes";
+  const isEditNote = pathname?.startsWith("/note/") && !isNotesList;
+  let dynnamicList = [];
+
+  if (isDashboard) {
+    dynnamicList.push({
+      label: "View Notes",
+      onClick: () => router.push("/notes"),
+      disabled: false,
+    });
+  } else if (isNotesList) {
+    dynnamicList.push({
+      label: "Create Note",
+      onClick: () => router.push("/dashboard"),
+      disabled: false,
+    });
+  } else if (isEditNote) {
+    dynnamicList.push(
+      {
+        label: "Create Note",
         onClick: () => router.push("/dashboard"),
-        disabled: false
-      };
+        disabled: false,
+      },
+      {
+        label: "View Notes",
+        onClick: () => router.push("/notes"),
+        disabled: false,
+      }
+    );
+  }
 
   if (loading) {
     return (
@@ -74,18 +93,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </>
             }
             items={[
-              navLink,
+              ...dynnamicList,
               {
                 label: "Sign out",
                 onClick: handleSignOut,
                 disabled: !user,
               },
             ]}
-            disabled={!user} 
+            disabled={!user}
           />
         </header>
 
-        {children} 
+        {children}
       </main>
     </UserProvider>
   );

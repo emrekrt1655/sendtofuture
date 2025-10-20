@@ -1,19 +1,38 @@
 "use client";
 
-import { submitNoteAction } from "@/lib/createNoteAction";
+import { submitNoteAction } from "@/lib/postNoteAction";
+import { Note } from "@/types/Note";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
 
-export default function NoteForm({ userId }: { userId: string }) {
+interface NoteFormProps {
+  userId: string;
+  note?: Note;
+}
+
+export default function NoteForm({ userId, note }: NoteFormProps) {
+  const router = useRouter();
   const [result, setResult] = useState<string | null>(null);
   const { pending } = useFormStatus();
+  const isUpdate = !!note;
+
+  const defaultSendAt =
+    isUpdate && note.send_at
+      ? new Date(note.send_at).toISOString().slice(0, 16)
+      : undefined;
 
   async function handleSubmit(formData: FormData) {
-    const res = await submitNoteAction(formData);
+    if (isUpdate && note.id) {
+      formData.append("note_id", note.id);
+    }
+
+    const res = await submitNoteAction(formData, isUpdate);
     if (res.guest) {
       setResult("Note logged to console (guest user).");
     } else if (res.success) {
-      setResult("Note saved to Supabase successfully!");
+      setResult(`Note ${!isUpdate ? "saved" : "updated"} saved successfully!`);
+      isUpdate && router.replace("/notes");
     } else {
       setResult(`Error: ${res.error}`);
     }
@@ -36,6 +55,7 @@ export default function NoteForm({ userId }: { userId: string }) {
           type="email"
           className="border rounded-md p-2 mt-1 dark:bg-gray-800"
           placeholder="example@email.com"
+          defaultValue={isUpdate ? note.recipient_email : ""}
         />
       </div>
 
@@ -48,6 +68,7 @@ export default function NoteForm({ userId }: { userId: string }) {
           type="text"
           className="border rounded-md p-2 mt-1 dark:bg-gray-800"
           placeholder="Optional"
+          defaultValue={isUpdate ? note.recipient_name : ""}
         />
       </div>
 
@@ -61,6 +82,7 @@ export default function NoteForm({ userId }: { userId: string }) {
           rows={4}
           className="border rounded-md p-2 mt-1 dark:bg-gray-800"
           placeholder="Write your message..."
+          defaultValue={isUpdate ? note.content : ""}
         />
       </div>
 
@@ -73,6 +95,7 @@ export default function NoteForm({ userId }: { userId: string }) {
           name="send_at"
           type="datetime-local"
           className="border rounded-md p-2 mt-1 dark:bg-gray-800"
+          defaultValue={isUpdate ? defaultSendAt : undefined}
         />
       </div>
 
@@ -81,7 +104,13 @@ export default function NoteForm({ userId }: { userId: string }) {
         disabled={pending}
         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
       >
-        {pending ? "Saving..." : "Save Note"}
+        {pending
+          ? isUpdate
+            ? "Updating"
+            : "Saving"
+          : isUpdate
+            ? "Update Note"
+            : "Save Note"}
       </button>
 
       {result && <p className="text-sm text-center text-gray-600">{result}</p>}
