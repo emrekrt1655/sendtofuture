@@ -40,12 +40,14 @@ export default function NoteList({ userId }: { userId: string }) {
 
   if (notes.length === 0) {
     return (
-      <p className="text-center text-gray-500">You don’t have any notes yet.</p>
+      <p className="text-center text-gray-400 p-8">
+        You don’t have any notes yet. Schedule one!
+      </p>
     );
   }
 
   return (
-    <div className="space-y-4 mt-24">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
       {notes.map((note) => (
         <NoteCard key={note.id} note={note} />
       ))}

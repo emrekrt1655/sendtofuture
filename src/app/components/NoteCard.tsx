@@ -1,41 +1,64 @@
+// NoteCard.tsx
+import React from "react";
 import { Note } from "@/types/Note";
 import { useRouter } from "next/navigation";
 
-export default function NoteCard({ note }: { note: Note }) {
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
-
-  const router = useRouter();
-
-  const formattedDate = new Date(note.send_at).toLocaleDateString(
-    "en-US",
-    dateOptions
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return (
+    date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }) +
+    ", " +
+    date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
   );
+};
 
-  const handleRouteClick = () => {
-    router.push(`/note/${note.id}`);
-  };
+interface NoteCardProps {
+  note: Note;
+}
+
+const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
+  const router = useRouter();
+  const displayContent = note.content;
 
   return (
     <div
-      className="p-4 border rounded-lg bg-white dark:bg-gray-800 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-      onClick={handleRouteClick}
+      className="bg-gray-800 hover:bg-gray-700/80 transition duration-200 rounded-lg p-5 border border-gray-700/50 cursor-pointer 
+                   flex flex-col min-h-[300px] w-full text-gray-200 relative"
     >
-      <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-          {note.recipient_name || note.recipient_email}
-        </h3>
-        <span className="text-xs text-gray-500">{formattedDate}</span>
+      <div className="absolute top-4 right-4 text-xs font-medium text-gray-400">
+        {formatDate(note.send_at)}
       </div>
-      <p className="mt-2 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-        {note.content}
-      </p>
+
+      <div className="flex flex-col flex-grow mt-4">
+        <h2 className="text-xl text-left font-bold text-white mb-2 truncate">
+          Recipent: {note.recipient_name || note.recipient_email}
+        </h2>
+        <div className="text-sm text-left text-gray-400 flex-grow overflow-hidden">
+          <p
+            className="line-clamp-4"
+            dangerouslySetInnerHTML={{
+              __html: displayContent || "No message content.",
+            }}
+          ></p>
+        </div>
+      </div>
+
+      <div className="absolute bottom-4 right-4 flex-shrink-0">
+        {" "}
+        <button
+          onClick={() => {
+            router.push(`/note/${note.id}`);
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md text-sm transition-colors"
+        >
+          Edit
+        </button>
+      </div>
     </div>
   );
-}
+};
+
+export default NoteCard;
