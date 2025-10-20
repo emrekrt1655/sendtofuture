@@ -1,4 +1,3 @@
-// NoteCard.tsx
 import React from "react";
 import { Note } from "@/types/Note";
 import { useRouter } from "next/navigation";
@@ -22,6 +21,9 @@ interface NoteCardProps {
 const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
   const router = useRouter();
   const displayContent = note.content;
+  const isSent = !!note.sent_at;
+
+  const sentDate = isSent ? formatDate(note.sent_at as string) : null;
 
   return (
     <div
@@ -46,8 +48,17 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
         </div>
       </div>
 
-      <div className="absolute bottom-4 right-4 flex-shrink-0">
-        {" "}
+      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center flex-shrink-0">
+        {isSent ? (
+          <p className="text-xs font-semibold text-green-400">
+            SENT: {sentDate}
+          </p>
+        ) : (
+          <p className="text-xs font-semibold text-yellow-400">
+            STATUS: Scheduled
+          </p>
+        )}
+
         <button
           onClick={() => {
             router.push(`/note/${note.id}`);

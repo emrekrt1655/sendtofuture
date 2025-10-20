@@ -6,4 +6,5 @@ export interface Note {
   content: string;
   send_at: string;
   created_at: string;
+  sent_at?: string;
 }

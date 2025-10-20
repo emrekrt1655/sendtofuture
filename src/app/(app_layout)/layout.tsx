@@ -45,7 +45,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isDashboard = pathname === "/dashboard";
   const isNotesList = pathname === "/notes";
   const isEditNote = pathname?.startsWith("/note/") && !isNotesList;
-  let dynnamicList = [];
+  const dynnamicList = [];
 
   if (isDashboard) {
     dynnamicList.push({

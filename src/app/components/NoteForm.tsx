@@ -34,8 +34,8 @@ const PendingButton = ({ isUpdate }: { isUpdate: boolean }) => {
           ? "Updating..."
           : "Saving..."
         : isUpdate
-        ? "Update Note"
-        : "Save Note"}
+          ? "Update Note"
+          : "Save Note"}
     </button>
   );
 };
@@ -43,7 +43,7 @@ const PendingButton = ({ isUpdate }: { isUpdate: boolean }) => {
 export default function NoteForm({ userId, note }: NoteFormProps) {
   const router = useRouter();
   const [result, setResult] = useState<string | null>(null);
-  
+
   const isUpdate = !!note;
   const [content, setContent] = useState(note?.content || "");
 
@@ -64,7 +64,9 @@ export default function NoteForm({ userId, note }: NoteFormProps) {
       setResult("Note logged to console (guest user).");
     } else if (res.success) {
       setResult(`Note ${!isUpdate ? "saved" : "updated"} successfully!`);
-      isUpdate && router.replace("/notes");
+      if (isUpdate) {
+        router.replace("/notes");
+      }
     } else {
       setResult(`Error: ${res.error}`);
     }
@@ -76,11 +78,13 @@ export default function NoteForm({ userId, note }: NoteFormProps) {
       className="flex flex-col p-8 w-full max-w-4xl h-[85vh] bg-white dark:bg-gray-900 rounded-xl shadow-2xl space-y-6 mx-auto"
     >
       <input type="hidden" name="user_id" value={userId} />
-      
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-shrink-0">
-        
         <div className="flex flex-col text-left">
-          <label htmlFor="recipient_name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="recipient_name"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Recipient Name
           </label>
           <input
@@ -93,7 +97,10 @@ export default function NoteForm({ userId, note }: NoteFormProps) {
         </div>
 
         <div className="flex flex-col text-left">
-          <label htmlFor="recipient_email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="recipient_email"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Recipient Email *
           </label>
           <input
@@ -105,9 +112,12 @@ export default function NoteForm({ userId, note }: NoteFormProps) {
             defaultValue={isUpdate ? note.recipient_email : ""}
           />
         </div>
-        
+
         <div className="flex flex-col text-left">
-          <label htmlFor="send_at" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="send_at"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Send At *
           </label>
           <input
@@ -118,18 +128,20 @@ export default function NoteForm({ userId, note }: NoteFormProps) {
             defaultValue={isUpdate ? defaultSendAt : undefined}
           />
         </div>
-        
-        <div className="flex flex-col justify-end"> 
-            <PendingButton isUpdate={isUpdate} />
-        </div>
 
+        <div className="flex flex-col justify-end">
+          <PendingButton isUpdate={isUpdate} />
+        </div>
       </div>
 
-      <div className="flex flex-col text-left flex-grow min-h-0"> 
-        <label htmlFor="content" className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
+      <div className="flex flex-col text-left flex-grow min-h-0">
+        <label
+          htmlFor="content"
+          className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200"
+        >
           Message *
         </label>
-        <div className="flex-grow min-h-[300px]"> 
+        <div className="flex-grow min-h-[300px]">
           <TipTapEditor
             defaultContent={note?.content || ""}
             onChange={(html) => setContent(html)}

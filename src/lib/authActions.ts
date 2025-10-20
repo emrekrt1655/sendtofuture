@@ -2,7 +2,6 @@ import { supabase } from "./supabaseClient";
 
 export const signInWithEmail = async (email: string, password: string) => {
   try {
-    const redirectUrl = `${location.origin}/dashboard`;
     const { data: signInData, error: signInError } =
       await supabase.auth.signInWithPassword({
         email,
@@ -27,9 +26,13 @@ export const signInWithEmail = async (email: string, password: string) => {
 
     console.log("✅ User signed in successfully:", signInData);
     return { data: signInData, isNewUser: false };
-  } catch (err: any) {
-    console.error("❌ Auth error:", err.message);
-    throw new Error(err.message);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error("❌ Auth error:", err.message);
+      throw new Error(err.message);
+    } else {
+      console.error("❌ Unknown auth error:", err);
+    }
   }
 };
 

@@ -24,13 +24,17 @@ export default function LoginCard() {
       setLoading(true);
       const result = await signInWithEmail(form.email, form.password);
 
-      if (result.isNewUser) {
+      if (result?.isNewUser) {
         alert("Account created! Check your email for verification.");
       } else {
         handleRouteToDashboard();
       }
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred during login.");
+      }
     } finally {
       setLoading(false);
     }
@@ -40,8 +44,12 @@ export default function LoginCard() {
     try {
       setLoading(true);
       await signInWithOAuth("google");
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unknown error occurred during OAuth login.");
+      }
     } finally {
       setLoading(false);
     }
@@ -92,13 +100,13 @@ export default function LoginCard() {
       </button>
 
       <p className="text-sm text-center text-gray-500 mt-4">
-        If you don't want to login, go to the{" "}
+        If you do not want to login, go to the
         <span
           onClick={handleRouteToDashboard}
           className="cursor-pointer font-medium text-pink-700"
         >
           dashboard
-        </span>{" "}
+        </span>
         and use the app as a guest!
       </p>
       <p className="text-sm text-center text-gray-500 mt-4">

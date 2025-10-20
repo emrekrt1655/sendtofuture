@@ -4,7 +4,7 @@ import { Editor } from "@tiptap/react";
 import React from "react";
 import {
   Bold, Italic, Strikethrough, Code, List, ListOrdered, Heading1, Heading2, AlignLeft, AlignCenter, AlignRight,
-  Highlighter, Underline, Palette, Text, Minus, Quote
+  Highlighter, Underline, Text, Minus, Quote
 } from "lucide-react";
 
 interface TipTapToolbarProps {
