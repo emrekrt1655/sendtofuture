@@ -52,7 +52,7 @@ export default function DropdownMenu({
           style={{
             backgroundColor: "var(--background)",
             color: "var(--foreground)",
-            borderColor: state.theme === "dark" ? "#374151" : "#e5e7eb", // Tailwind dark:border-gray-700 / light:border-gray-100
+            borderColor: state.theme === "dark" ? "#374151" : "#e5e7eb",
           }}
         >
           {items.map((item, idx) => (

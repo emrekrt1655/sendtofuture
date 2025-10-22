@@ -45,21 +45,54 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isDashboard = pathname === "/dashboard";
   const isNotesList = pathname === "/notes";
   const isEditNote = pathname?.startsWith("/note/") && !isNotesList;
+  const isSettings = pathname === "/settings";
   const dynnamicList = [];
 
   if (isDashboard) {
-    dynnamicList.push({
-      label: "View Notes",
-      onClick: () => router.push("/notes"),
-      disabled: false,
-    });
+    dynnamicList.push(
+      {
+        label: "View Notes",
+        onClick: () => router.push("/notes"),
+        disabled: false,
+      },
+      {
+        label: "Settings",
+        onClick: () => router.push("/settings"),
+        disabled: false,
+      }
+    );
   } else if (isNotesList) {
-    dynnamicList.push({
-      label: "Create Note",
-      onClick: () => router.push("/dashboard"),
-      disabled: false,
-    });
+    dynnamicList.push(
+      {
+        label: "Create Note",
+        onClick: () => router.push("/dashboard"),
+        disabled: false,
+      },
+      {
+        label: "Settings",
+        onClick: () => router.push("/settings"),
+        disabled: false,
+      }
+    );
   } else if (isEditNote) {
+    dynnamicList.push(
+      {
+        label: "Create Note",
+        onClick: () => router.push("/dashboard"),
+        disabled: false,
+      },
+      {
+        label: "View Notes",
+        onClick: () => router.push("/notes"),
+        disabled: false,
+      },
+      {
+        label: "Settings",
+        onClick: () => router.push("/settings"),
+        disabled: false,
+      }
+    );
+  } else if (isSettings) {
     dynnamicList.push(
       {
         label: "Create Note",
