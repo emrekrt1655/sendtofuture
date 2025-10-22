@@ -30,6 +30,41 @@ export const getAuthUserProfile = async (
   return data as Profile;
 };
 
+export async function upgradeUserToPremium(userId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ is_premium: true })
+      .eq("id", userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("Upgrade failed:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function cancelUserPremium(userId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ is_premium: false })
+      .eq("id", userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("Cancel failed:", err);
+    return { success: false, error: err.message };
+  }
+}
 export async function updateAuthUserProfile(formData: FormData) {
   const userId = formData.get("user_id")?.toString() || "";
 
@@ -37,7 +72,6 @@ export async function updateAuthUserProfile(formData: FormData) {
     username: formData.get("username")?.toString() || "",
     photo_url: formData.get("photo_url")?.toString() || "",
     description: formData.get("description")?.toString() || "",
-    is_premium: formData.get("is_premium") === "on",
   };
 
   const { data, error } = await supabase
