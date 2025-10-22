@@ -1,9 +1,7 @@
 import { Profile, SupabaseSingleResponse } from "@/types/User";
 import { supabase } from "./supabaseClient";
 
-export const getAuthUserProfile = async (
-  userId: string
-): Promise<Profile | null> => {
+const userErrorCheck = (userId: string) => {
   if (
     !userId ||
     userId === "guest" ||
@@ -12,6 +10,13 @@ export const getAuthUserProfile = async (
     console.warn("getAuthUserProfile called with invalid userId:");
     return null;
   }
+};
+
+export const getAuthUserProfile = async (
+  userId: string
+): Promise<Profile | null> => {
+    
+  userErrorCheck(userId);
 
   const { data, error }: SupabaseSingleResponse = await supabase
     .from("profiles")
@@ -30,14 +35,8 @@ export const updateAuthUserProfile = async (
   userId: string,
   updates: Partial<Omit<Profile, "id">>
 ): Promise<Profile | null> => {
-  if (
-    !userId ||
-    userId === "guest" ||
-    userId === "00000000-0000-0000-0000-000000000000"
-  ) {
-    console.warn("updateAuthUserProfile called with invalid userId:");
-    return null;
-  }
+  userErrorCheck(userId);
+
   const { data, error }: SupabaseSingleResponse = await supabase
     .from("profiles")
     .update(updates)
