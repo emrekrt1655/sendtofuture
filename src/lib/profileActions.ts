@@ -15,7 +15,6 @@ const userErrorCheck = (userId: string) => {
 export const getAuthUserProfile = async (
   userId: string
 ): Promise<Profile | null> => {
-    
   userErrorCheck(userId);
 
   const { data, error }: SupabaseSingleResponse = await supabase
@@ -31,22 +30,28 @@ export const getAuthUserProfile = async (
   return data as Profile;
 };
 
-export const updateAuthUserProfile = async (
-  userId: string,
-  updates: Partial<Omit<Profile, "id">>
-): Promise<Profile | null> => {
-  userErrorCheck(userId);
+export async function updateAuthUserProfile(formData: FormData) {
+  const userId = formData.get("user_id")?.toString() || "";
 
-  const { data, error }: SupabaseSingleResponse = await supabase
+  const profileUpdates = {
+    username: formData.get("username")?.toString() || "",
+    photo_url: formData.get("photo_url")?.toString() || "",
+    description: formData.get("description")?.toString() || "",
+    is_premium: formData.get("is_premium") === "on",
+  };
+
+  const { data, error } = await supabase
     .from("profiles")
-    .update(updates)
+    .update(profileUpdates)
     .eq("id", userId)
     .select()
     .single();
 
   if (error) {
-    console.error("Error updating user profile:", error.message);
-    return null;
+    console.error("❌ Error updating profile:", error.message);
+    return { success: false, error: error.message };
   }
-  return data as Profile;
-};
+
+  console.log("✅ Profile updated successfully:", data);
+  return { success: true, guest: data.id === "guest" };
+}
